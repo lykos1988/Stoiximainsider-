@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Stoixima Insider — Προβλέψεις</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+:root{
+  --bg:#0f1114;
+  --card:#151619;
+  --muted:#bdbdbd;
+  --accent:#e91e63;
+  --accent-2:#ff2d95;
+  --success:#2e7d32;
+  --danger:#b71c1c;
+  --glass: rgba(255,255,255,0.03);
+  --radius:16px;
+  --maxwidth:1100px;
+}
+body.light {
+  --bg:#f5f7fb;
+  --card:#ffffff;
+  --muted:#666;
+  --glass: rgba(0,0,0,0.02);
+  color: #111;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto;
+  background: var(--bg);
+  color: #fff;
+  line-height:1.35;
+}
+.site-header{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:18px 22px;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  background:rgba(255,255,255,0.03);
+  position:sticky;top:0;z-index:40;
+  backdrop-filter: blur(4px);
+}
+.brand{display:flex;align-items:center;gap:12px}
+.logo-text{font-weight:700;font-size:20px}
+.logo-text span{color:var(--accent);font-weight:800}
+.header-actions{display:flex;gap:10px;align-items:center}
+.action-btn,.btn{
+  border:0;padding:9px 13px;border-radius:10px;
+  background:var(--glass);color:#fff;cursor:pointer;font-weight:600;
+}
+.action-btn.telegram{background:#0088cc}
+.action-btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+.container{
+  max-width:var(--maxwidth);
+  margin:24px auto;padding:0 18px;
+  display:grid;grid-template-columns:1fr 300px;gap:20px;
+}
+.controls{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.tabs{display:flex;gap:8px}
+.tab{
+  padding:8px 14px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);
+  background:transparent;color:var(--muted);cursor:pointer;font-weight:700;
+}
+.tab.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;border:0}
+.search{padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.05);background:var(--glass);color:white}
+.select{padding:10px;border-radius:10px;background:var(--glass);color:white;border:1px solid rgba(255,255,255,0.05)}
+.grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));
+  gap:16px;
+}
+.card{
+  background:var(--card);border-radius:16px;padding:14px;
+  border:1px solid rgba(255,255,255,0.05);
+  box-shadow:0 6px 18px rgba(0,0,0,0.4);
+  transition:.25s;
+}
+.card:hover{transform:translateY(-4px)}
+.teams{color:var(--accent);font-weight:800;font-size:17px;margin-bottom:6px}
+.meta{font-size:13px;color:var(--muted);margin-bottom:8px;display:flex;justify-content:space-between}
+.status{margin-top:10px;padding:6px 10px;border-radius:12px;font-size:12px;font-weight:700;color:white}
+.status.pending{background:#777}
+.status.win{background:var(--success)}
+.status.lost{background:var(--danger)}
+.vip-lock{
+  margin-top:10px;padding:10px;border-radius:12px;text-align:center;
+  border:1px dashed rgba(255,255,255,0.2);cursor:pointer;
+  font-weight:700;background:rgba(255,255,255,0.05)
+}
+.tip{margin-top:8px;display:flex;gap:6px}
+.pill{padding:6px 8px;background:rgba(255,255,255,0.05);border-radius:8px;font-weight:700}
+.sidebar{position:sticky;top:80px}
+.stats,.about{
+  background:var(--card);padding:14px;margin-bottom:12px;border-radius:12px;
+  border:1px solid rgba(255,255,255,0.05)
+}
+.modal{
+  position:fixed;inset:0;background:rgba(0,0,0,0.6);
+  display:none;align-items:center;justify-content:center;padding:20px;z-index:70;
+}
+.modal[aria-hidden="false"]{display:flex}
+.modal-card{
+  background:var(--card);padding:20px;border-radius:16px;width:100%;max-width:450px;position:relative;
+  border:1px solid rgba(255,255,255,0.1)
+}
+.modal-close{
+  position:absolute;right:10px;top:10px;border:0;background:transparent;
+  color:white;font-size:20px;cursor:pointer;
+}
+.form-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;
+}
+.form-grid input,.form-grid select{
+  padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);
+  background:rgba(0,0,0,0.3);color:white
+}
+.admin-trigger{
+  position:fixed;right:14px;bottom:14px;
+  background:var(--card);border-radius:50%;padding:10px;color:white;
+  border:1px solid rgba(255,255,255,0.1);cursor:pointer;opacity:0.4;
+  z-index:200;
+}
+@media(max-width:900px){
+  .container{grid-template-columns:1fr}
+  .sidebar{position:static}
+  .controls{flex-direction:column;align-items:stretch}
+  .form-grid{grid-template-columns:1fr}
+}
+  </style>
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="brand">
+    <div class="logo-text">Stoixima <span>Insider</span></div>
+  </div>
+
+  <div class="header-actions">
+    <button id="themeToggle" class="action-btn">🌗</button>
+    <a href="https://t.me/stoiximainsider" target="_blank" class="action-btn telegram">Telegram</a>
+    <button id="addBtn" class="action-btn primary" style="display:none">Προσθήκη</button>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="controls">
+    <div class="tabs">
+      <button class="tab active" data-tab="all">Όλα</button>
+      <button class="tab" data-tab="free">Ανοικτά</button>
+      <button class="tab" data-tab="locked">Κλειδωμένα</button>
+    </div>
+
+    <div style="display:flex;gap:10px">
+      <input id="searchInput" class="search" placeholder="Αναζήτηση..." />
+      <select id="sortSelect" class="select">
+        <option value="date_desc">Νεότερα</option>
+        <option value="date_asc">Παλαιότερα</option>
+        <option value="status">Κατά Status</option>
+      </select>
+    </div>
+  </section>
+
+  <section id="cards" class="grid"></section>
+
+  <aside class="sidebar">
+    <div class="stats">
+      <h4>Στατιστικά</h4>
+      <div id="statsContent">-</div>
+    </div>
+    <div class="about">
+      <h4>Πληροφορίες</h4>
+      <p>Tipster panel με αποθήκευση στο LocalStorage.</p>
+    </div>
+  </aside>
+
+</main>
+
+<div id="modal" class="modal" aria-hidden="true">
+  <div class="modal-card">
+    <button id="modalClose" class="modal-close">×</button>
+    <h3 style="margin-bottom:12px">Πρόβλεψη</h3>
+
+    <div class="form-grid">
+      <input id="date" placeholder="Ημερομηνία" />
+      <input id="time" placeholder="Ώρα" />
+      <input id="league" placeholder="Λίγκα" />
+      <input id="home" placeholder="Home" />
+      <input id="away" placeholder="Away" />
+
+      <!-- TIP WITH CUSTOM -->
+      <div style="display:flex; gap:10px;">
+        <select id="tip" style="flex:1">
+          <option value="1">1</option>
+          <option value="X">X</option>
+          <option value="2">2</option>
+          <option value="GG">GG</option>
+          <option value="NG">NG</option>
+          <option value="custom">Άλλο...</option>
+        </select>
+        <input id="customTip" placeholder="Custom Tip" style="flex:1; display:none" />
+      </div>
+
+      <input id="odds" placeholder="Απόδοση" />
+      <select id="statusSel"><option value="pending">Pending</option><option value="win">Win</option><option value="lost">Lost</option></select>
+      <select id="lockedSel"><option value="free">Ανοικτό</option><option value="locked">Κλειδωμένο</option></select>
+    </div>
+
+    <button id="save" class="btn primary" style="width:100%;margin-top:8px">Αποθήκευση</button>
+  </div>
+</div>
+
+<button id="adminTrigger" class="admin-trigger">🛠️</button>
+
+<script>
+/* ========= JS START ========= */
+
+const STORAGE_KEY = "si_bets_v1";
+const THEME_KEY = "si_theme_v1";
+const ADMIN_HASH = "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9"; 
+// Κωδικός admin: admin123
+
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => [...document.querySelectorAll(s)];
+
+let data = [];
+let isAdmin = localStorage.getItem("si_admin") === "1";
+
+const cardsEl = $("#cards");
+const addBtn = $("#addBtn");
+const adminTrigger = $("#adminTrigger");
+const modal = $("#modal");
+const modalClose = $("#modalClose");
+const saveBtn = $("#save");
+const searchInput = $("#searchInput");
+const sortSelect = $("#sortSelect");
+const statsContent = $("#statsContent");
+const themeToggle = $("#themeToggle");
+
+const dateIn = $("#date");
+const timeIn = $("#time");
+const leagueIn = $("#league");
+const homeIn = $("#home");
+const awayIn = $("#away");
+const tipIn = $("#tip");
+const customTip = $("#customTip");
+const oddsIn = $("#odds");
+const statusSel = $("#statusSel");
+const lockedSel = $("#lockedSel");
+
+let editingId = null;
+
+/* CUSTOM TIP HANDLER */
+tipIn.addEventListener("change", () => {
+  if (tipIn.value === "custom") {
+    customTip.style.display = "block";
+    customTip.focus();
+  } else {
+    customTip.style.display = "none";
+    customTip.value = "";
+  }
+});
+
+/* ---- Utility ---- */
+
+function formatDate(d) {
+  if (!d) return 0;
+  if (d.includes("/")) {
+    const [dd, mm, yyyy] = d.split("/");
+    return Number(new Date(`${yyyy}-${mm}-${dd}`)) || 0;
+  }
+  return Number(new Date(d)) || 0;
+}
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+function escapeHTML(str) {
+  return (str || "").replace(/[&<>"]/g, (c) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+  }[c]));
+}
+
+/* ---- STORAGE ---- */
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    data = raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    data = [];
+  }
+}
+
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+/* ---- THEME ---- */
+
+function applyTheme() {
+  const th = localStorage.getItem(THEME_KEY) || "dark";
+  document.body.classList.toggle("light", th === "light");
+}
+applyTheme();
+
+/* ---- RENDER ---- */
+
+function render(tab = "all") {
+  const q = searchInput.value.toLowerCase();
+  let list = data.slice();
+
+  if (tab === "free") list = list.filter((x) => x.locked === "free");
+  if (tab === "locked") list = list.filter((x) => x.locked === "locked");
+
+  if (q) {
+    list = list.filter((x) =>
+      (x.home + " " + x.away + " " + x.league + " " + x.tip).toLowerCase().includes(q)
+    );
+  }
+
+  const sortVal = sortSelect.value;
+  if (sortVal === "date_desc") list.sort((a, b) => formatDate(b.date) - formatDate(a.date));
+  if (sortVal === "date_asc") list.sort((a, b) => formatDate(a.date) - formatDate(b.date));
+  if (sortVal === "status") list.sort((a, b) => a.status.localeCompare(b.status));
+
+  cardsEl.innerHTML = "";
+
+  if (list.length === 0) {
+    cardsEl.innerHTML = `<div class="card" style="opacity:0.8">Δεν υπάρχουν προβλέψεις.</div>`;
+    updateStats();
+    return;
+  }
+
+  list.forEach((m) => {
+    const c = document.createElement("div");
+    c.className = "card";
+
+    const tips =
+      m.locked === "locked"
+        ? `<div class="vip-lock" data-id="${m.id}"><span>🔒</span> Αποκλειστικό — €5</div>`
+        : `<div class="tip">
+             <div class="pill">Σημείο: <b>${escapeHTML(m.tip)}</b></div>
+             <div class="pill">Απόδοση: <b>${escapeHTML(m.odds || "-")}</b></div>
+           </div>`;
+
+    c.innerHTML = `
+      <div class="teams">${escapeHTML(m.home)} vs ${escapeHTML(m.away)}</div>
+      <div class="meta">
+        <div>${escapeHTML(m.league)}</div>
+        <div>${escapeHTML(m.date)} ${m.time ? "• " + escapeHTML(m.time) : ""}</div>
+      </div>
+      ${tips}
+      <div class="status ${m.status}">${m.status.toUpperCase()}</div>
+    `;
+
+    if (m.locked === "free" && isAdmin) {
+      c.addEventListener("click", () => openEdit(m.id));
+    }
+
+    if (m.locked === "locked") {
+      c.querySelector(".vip-lock").addEventListener("click", () => {
+        window.location.href =
+          "https://buymeacoffee.com/sotirisdimp?amount=5&redirect=" +
+          encodeURIComponent(window.location.href + "?unlocked=1&id=" + m.id);
+      });
+    }
+
+    cardsEl.appendChild(c);
+  });
+
+  updateStats();
+}
+
+/* ---- STATS ---- */
+
+function updateStats() {
+  const total = data.length;
+  if (!total) {
+    statsContent.innerHTML = "-";
+    return;
+  }
+  const win = data.filter((x) => x.status === "win").length;
+  const lost = data.filter((x) => x.status === "lost").length;
+  const pending = data.filter((x) => x.status === "pending").length;
+
+  const rate = Math.round((win / total) * 100);
+
+  statsContent.innerHTML = `
+    Σύνολο: <b>${total}</b><br>
+    Win: <b>${win}</b> — Lost: <b>${lost}</b> — Pending: <b>${pending}</b><br>
+    Επιτυχία: <b>${rate}%</b>
+  `;
+}
+
+/* ---- MODAL ---- */
+
+function openModal() {
+  modal.setAttribute("aria-hidden", "false");
+  modal.style.display = "flex";
+  editingId = null;
+
+  dateIn.value = "";
+  timeIn.value = "";
+  leagueIn.value = "";
+  homeIn.value = "";
+  awayIn.value = "";
+  tipIn.value = "1";
+  customTip.style.display = "none";
+  customTip.value = "";
+  oddsIn.value = "";
+  statusSel.value = "pending";
+  lockedSel.value = "free";
+}
+
+function closeModal() {
+  modal.setAttribute("aria-hidden", "true");
+  modal.style.display = "none";
+  editingId = null;
+}
+
+modalClose.addEventListener("click", closeModal);
+modal.addEventListener("click", (e) => {
+  if (e.target === modal) closeModal();
+});
+
+addBtn.addEventListener("click", openModal);
+
+/* ---- EDIT ---- */
+
+function openEdit(id) {
+  const m = data.find((x) => x.id === id);
+  if (!m) return;
+
+  editingId = id;
+  modal.setAttribute("aria-hidden", "false");
+  modal.style.display = "flex";
+
+  dateIn.value = m.date;
+  timeIn.value = m.time;
+  leagueIn.value = m.league;
+  homeIn.value = m.home;
+  awayIn.value = m.away;
+
+  if (["1","X","2","GG","NG"].includes(m.tip)) {
+    tipIn.value = m.tip;
+    customTip.style.display = "none";
+    customTip.value = "";
+  } else {
+    tipIn.value = "custom";
+    customTip.style.display = "block";
+    customTip.value = m.tip;
+  }
+
+  oddsIn.value = m.odds;
+  statusSel.value = m.status;
+  lockedSel.value = m.locked;
+}
+
+/* ---- SAVE ---- */
+
+saveBtn.addEventListener("click", () => {
+  const m = {
+    id: editingId || Date.now(),
+    date: dateIn.value.trim(),
+    time: timeIn.value.trim(),
+    league: leagueIn.value.trim(),
+    home: homeIn.value.trim(),
+    away: awayIn.value.trim(),
+    tip: tipIn.value === "custom" ? customTip.value.trim() : tipIn.value,
+    odds: oddsIn.value.trim(),
+    status: statusSel.value,
+    locked: lockedSel.value,
+  };
+
+  if (!m.home || !m.away) {
+    alert("Συμπλήρωσε ομάδες.");
+    return;
+  }
+
+  if (editingId) {
+    const i = data.findIndex((x) => x.id === editingId);
+    if (i >= 0) data[i] = m;
+  } else {
+    data.push(m);
+  }
+
+  saveData();
+  closeModal();
+  render($(".tab.active").dataset.tab);
+});
+
+/* ---- TABS ---- */
+
+$$(".tab").forEach((t) =>
+  t.addEventListener("click", () => {
+    $$(".tab").forEach((x) => x.classList.remove("active"));
+    t.classList.add("active");
+    render(t.dataset.tab);
+  })
+);
+
+/* ---- SEARCH ---- */
+
+searchInput.addEventListener("input", () =>
+  render($(".tab.active").dataset.tab)
+);
+
+/* ---- SORT ---- */
+
+sortSelect.addEventListener("change", () =>
+  render($(".tab.active").dataset.tab)
+);
+
+/* ---- ADMIN ---- */
+
+adminTrigger.addEventListener("click", async () => {
+  const pass = prompt("Κωδικός διαχειριστή:");
+  if (!pass) return;
+  const hash = await sha256(pass);
+
+  if (hash === ADMIN_HASH) {
+    isAdmin = true;
+    localStorage.setItem("si_admin", "1");
+    addBtn.style.display = "inline-block";
+    alert("Admin mode ενεργό!");
+  } else {
+    alert("Λάθος κωδικός");
+  }
+});
+
+adminTrigger.addEventListener("contextmenu", (e) => {
+  e.preventDefault();
+  isAdmin = false;
+  localStorage.removeItem("si_admin");
+  addBtn.style.display = "none";
+  alert("Αποσύνδεση admin.");
+});
+
+/* ---- THEME ---- */
+
+themeToggle.addEventListener("click", () => {
+  const newTheme = document.body.classList.toggle("light")
+    ? "light"
+    : "dark";
+  localStorage.setItem(THEME_KEY, newTheme);
+});
+
+/* ---- VIP UNLOCK ---- */
+
+(function checkUnlock() {
+  const p = new URLSearchParams(location.search);
+  if (p.get("unlocked") === "1") {
+    const id = p.get("id");
+
+    if (id) {
+      const rec = data.find((x) => String(x.id) === id);
+      if (rec) rec.locked = "free";
+    } else {
+      data.forEach((x) => (x.locked = "free"));
+    }
+
+    saveData();
+    history.replaceState({}, "", location.pathname);
+  }
+})();
+
+/* ---- INIT ---- */
+
+load();
+render();
+
+/* ========= JS END ========= */
+</script>
+
+</body>
+</html>
